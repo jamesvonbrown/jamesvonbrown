@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Belt Curriculum - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🎯 {{ current_belt.upper() }} Belt Curriculum</h2>
+</div>
+
+<div class="card">
+    <h3>Overall Progress</h3>
+    <div class="progress-bar">
+        <div class="progress-fill" style="width: {{ progress_pct }}%;">
+            {{ progress_pct }}%
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Focus</h3>
+    <p>{{ belt_req.focus }}</p>
+
+    <h4 style="margin-top: 15px;">Priority Areas</h4>
+    <ul class="checklist">
+    {% for area in belt_req.priority_areas %}
+        <li class="incomplete">{{ area }}</li>
+    {% endfor %}
+    </ul>
+
+    {% if belt_req.time_estimate %}
+    <p style="margin-top: 15px;"><strong>Estimated Time:</strong> {{ belt_req.time_estimate }}</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>🤼 Wrestler-Specific Goals</h3>
+    <ul class="checklist">
+    {% for goal in belt_req.wrestler_specific_goals %}
+        <li class="incomplete">{{ goal }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% if belt_req.essential_techniques %}
+    {% for category, _ in belt_req.essential_techniques.items() %}
+    <div class="card">
+        <h3>{{ category.replace('_', ' ').title() }}</h3>
+        <ul class="checklist">
+        {% for tech_status in belt_req[category ~ '_status'] %}
+            <li class="{% if not tech_status.learned %}incomplete{% endif %}">
+                <a href="/technique/{{ tech_status.name }}" style="color: inherit; text-decoration: none;">
+                    {{ tech_status.name }}
+                    {% if tech_status.learned %}
+                    <span class="mastery-badge mastery-{{ tech_status.mastery.lower().replace(' ', '') }}">
+                        {{ tech_status.mastery }}
+                    </span>
+                    {% endif %}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card" style="text-align: center;">
+    <a href="/techniques" class="btn">📚 Browse All Techniques</a>
+    <a href="/log" class="btn">✏️ Log Practice</a>
+</div>
+{% endblock %}

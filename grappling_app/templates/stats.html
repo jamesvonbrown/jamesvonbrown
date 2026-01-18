@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Statistics - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📊 Training Statistics</h2>
+</div>
+
+<div class="card">
+    <h3>This Week</h3>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number">{{ weekly.total_sessions }}</div>
+            <div class="label">Sessions</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly.total_minutes }}</div>
+            <div class="label">Minutes</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly.dummy_sessions }}</div>
+            <div class="label">Dummy</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly.live_sessions }}</div>
+            <div class="label">Live</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly.techniques_practiced }}</div>
+            <div class="label">Techniques</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ "%.0f"|format(weekly.average_session_length) }}</div>
+            <div class="label">Avg Session</div>
+        </div>
+    </div>
+</div>
+
+{% if recent %}
+<div class="card">
+    <h3>Recent Sessions (Last 7 Days)</h3>
+    {% for log in recent[:5] %}
+    <div class="technique-item">
+        <h4>{{ log.technique_name }}</h4>
+        <p><strong>{{ log.timestamp[:10] }}</strong> • {{ log.practice_type }} • {{ log.duration_minutes }} min</p>
+        {% if log.quality_rating > 0 %}
+        <p>Quality: {{ "★" * log.quality_rating }}{{ "☆" * (5 - log.quality_rating) }}</p>
+        {% endif %}
+        {% if log.notes %}
+        <p><small>{{ log.notes }}</small></p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if all_stats %}
+<div class="card">
+    <h3>Technique Mastery</h3>
+    {% for tech in all_stats %}
+    <div class="technique-item">
+        <h4>
+            <a href="/technique/{{ tech.name }}" style="color: inherit; text-decoration: none;">
+                {{ tech.name }}
+            </a>
+        </h4>
+        <p>
+            <span class="mastery-badge mastery-{{ tech.mastery.lower().replace(' ', '') }}">
+                {{ tech.mastery }}
+            </span>
+        </p>
+        <div style="display: flex; justify-content: space-between; font-size: 0.9em; color: #9ca3af; margin-top: 8px;">
+            <span>{{ tech.sessions }} sessions</span>
+            <span>{{ tech.minutes }} min</span>
+            <span>D:{{ tech.dummy }} L:{{ tech.live }}</span>
+            {% if tech.quality > 0 %}
+            <span>Avg: {{ "%.1f"|format(tech.quality) }}/5</span>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="card">
+    <p style="text-align: center; color: #9ca3af;">No practice data yet. Start logging your sessions!</p>
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="/log" class="btn">✏️ Log Your First Session</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
