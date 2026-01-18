@@ -116,9 +116,9 @@ class TechniqueDatabase:
                 "Elevate opponent",
                 "Great for sweeps"
             ],
-            success_rate="63% sweep success rate",
-            finish_rate="Primarily sweeping platform (submissions rare)",
-            stats_notes="HIGH PERCENTAGE GUARD - 63% sweep success at white/blue belt (140 tournament study). Long legs give superior elevation and control. One of the best positions for your build."
+            success_rate="High-percentage sweep position (specific attempt data unavailable)",
+            finish_rate="Primarily sweeping platform (submissions rare at elite level)",
+            stats_notes="HIGH PERCENTAGE GUARD - Described as 'one of the most successful guards to sweep from' at elite levels. IBJJF 2022 recorded 252 sweeps in 190 matches (most common point-scoring action). Long legs (yours: 60.8%!) give superior elevation and control. Optimal for your build."
         ))
 
         self.add_technique(Technique(
@@ -305,9 +305,9 @@ class TechniqueDatabase:
                 "Grab behind knees",
                 "Drive through opponent"
             ],
-            success_rate="41% match-takedown ratio (no-gi) vs 14% (gi)",
-            finish_rate="Nearly 3x more effective in no-gi",
-            stats_notes="WRESTLING DOMINANCE - No-gi takedowns (41%) vastly outperform gi (14%). 62 takedowns at ADCC 2024 alone (more than all 2022 categories combined). Your wrestling background gives massive advantage, especially in no-gi. 'Remove the gi-grip and double legs rule the game.'"
+            success_rate="~20% attempt success for leg-based takedowns",
+            finish_rate="Significantly more effective in no-gi than gi",
+            stats_notes="WRESTLING DOMINANCE - REAL DATA: Single leg variations show ~20% attempt success in competition. ADCC 2024 had 62 total takedowns (13 double legs, 15 single legs), far exceeding guard passes (26) and sweeps (31). No-gi matches feature takedowns 3x more often than gi (41% vs 14% match frequency). Your wrestling background provides massive advantage."
         ))
 
         self.add_technique(Technique(
@@ -413,9 +413,9 @@ class TechniqueDatabase:
                 "Squeeze elbows together",
                 "Expand chest"
             ],
-            success_rate="22% of all submissions",
-            finish_rate="78% finish rate from back control",
-            stats_notes="KING OF SUBMISSIONS - Most common finish in elite BJJ (26 finishes at 2025 IBJJF No-Gi Worlds). If you get the back, you'll finish 78% of the time."
+            success_rate="42% attempt success (68 finishes from 132 attempts)",
+            finish_rate="78% finish rate from fully locked back control",
+            stats_notes="KING OF SUBMISSIONS - REAL DATA: 42% of RNC attempts finish the opponent (68/132). From fully locked back control, jumps to 78%. Most dominant at elite level: 26 finishes at 2025 IBJJF No-Gi Worlds, 45% of all IBJJF Worlds finishes."
         ))
 
         self.add_technique(Technique(
@@ -433,9 +433,9 @@ class TechniqueDatabase:
                 "Angle off",
                 "Pull head down, lift hips"
             ],
-            success_rate="62% success rate (gi), 38% at lower belts",
-            finish_rate="Top 3 submission at white-purple belts",
-            stats_notes="PERFECT FOR LONG LEGS - Research confirms 'lanky guard players with exceptional hip flexibility' see better-than-average success. 28 finishes from 45 attempts (62%) at IBJJF Worlds 2019."
+            success_rate="62% attempt success in gi (28 finishes from 45 attempts)",
+            finish_rate="Top 3 submission at white-purple belts, declines at elite black belt",
+            stats_notes="PERFECT FOR YOUR LEGS (60.8% leg ratio!) - REAL DATA: 62% success at IBJJF Worlds 2019 (28/45 attempts). Research confirms 'lanky guard players with exceptional hip flexibility' see better-than-average success. YOU are exactly this body type. 40% at white/blue/purple, 23% at brown/black."
         ))
 
         self.add_technique(Technique(
@@ -503,9 +503,9 @@ class TechniqueDatabase:
                 "Hips high, knees tight",
                 "Thumbs up, extend hips"
             ],
-            success_rate="19.5% of all submissions",
-            finish_rate="Top 3 most successful submission",
-            stats_notes="ELITE SUBMISSION - 2nd most common overall (19.5%). Long legs provide better angle and control. 10 finishes at 2025 IBJJF No-Gi Worlds. Fundamental for all belts."
+            success_rate="50% attempt success overall (68 finishes from 137 attempts)",
+            finish_rate="Varies by position: ~50% from mount, ~30% from guard",
+            stats_notes="ELITE FUNDAMENTAL - REAL DATA: 50% of armbar attempts succeed (68/137). Success varies by position: mount (~50%) vs guard (~30%). Accounts for 20% of all submissions. 10 finishes at 2025 IBJJF No-Gi Worlds. Long legs (yours: 60.8% leg ratio!) provide superior angle and control."
         ))
 
         self.add_technique(Technique(
@@ -608,9 +608,9 @@ class TechniqueDatabase:
                 "Inside position",
                 "Control heel and rotate"
             ],
-            success_rate="8% of ADCC submissions (growing trend)",
-            finish_rate="62% success from saddle position",
-            stats_notes="MODERN LEG LOCK GAME - 20 finishes at 2025 IBJJF No-Gi Worlds (2nd most common submission). Percentage doubled in last 5 years. Optimal for long-legged players from SLX entries. Brown/Black belt only (IBJJF). TAP EARLY - causes severe damage instantly."
+            success_rate="62% from saddle, 44% from ashi garami, 38% from 50/50 (position-dependent)",
+            finish_rate="Declining at elite level: 4 finishes at ADCC 2024 vs 20 at IBJJF Worlds 2025",
+            stats_notes="MODERN LEG LOCK GAME - REAL DATA: Position-dependent success: 62% from saddle position, 44% from ashi garami, 38% from 50/50 (ADCC 2017-2022). 20 finishes at 2025 IBJJF No-Gi Worlds but only 4 at ADCC 2024 (elite defense improving). Optimal for long-legged players (yours: 60.8%!) from SLX entries. Brown/Black only (IBJJF). TAP EARLY - severe damage instantly."
         ))
 
         self.add_technique(Technique(
@@ -856,9 +856,9 @@ class TechniqueDatabase:
                 "Squeeze bicep to neck",
                 "Natural for wrestlers"
             ],
-            success_rate="12% submission rate in pro competition",
-            finish_rate="60% of successful finishes occur from transitions",
-            stats_notes="WRESTLER'S SUBMISSION - Preferred in IBJJF no-gi divisions. Best hit from front headlock or turtle transitions (your wrestling strength). 20 D'arce finishes in UFC history."
+            success_rate="12% of MMA submissions (BJJ competition attempt data limited)",
+            finish_rate="60% of successful finishes occur from front headlock/turtle transitions",
+            stats_notes="WRESTLER'S SUBMISSION - REAL DATA: 60% of successful Darce finishes come from front headlock or turtle transitions (your wrestling strength). 12% submission rate in professional MMA. Preferred in IBJJF no-gi divisions. Frequently used by elite no-gi competitors."
         ))
 
         self.add_technique(Technique(
