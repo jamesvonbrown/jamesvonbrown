@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Home - BJJ Grappling App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>Your Profile</h2>
+    <p><strong>Height:</strong> 5'5" (65")</p>
+    <p><strong>Wingspan:</strong> 5'7.5" (67.5")</p>
+    <p><strong>Ape Index:</strong> +{{ profile.get_ape_index() }}"</p>
+    <p><strong>Body Type:</strong> Short torso, long legs</p>
+    <p><strong>Wrestling Experience:</strong> ✓ Yes</p>
+    <p><strong>Current Belt:</strong> <span class="belt-badge belt-{{ profile.current_belt }}">{{ profile.current_belt.upper() }}</span></p>
+</div>
+
+<div class="card">
+    <h2>This Week's Training</h2>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number">{{ weekly_summary.total_sessions }}</div>
+            <div class="label">Sessions</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly_summary.total_minutes }}</div>
+            <div class="label">Minutes</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly_summary.dummy_sessions }}</div>
+            <div class="label">Dummy</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ weekly_summary.live_sessions }}</div>
+            <div class="label">Live</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2>Quick Actions</h2>
+    <a href="/today" class="btn">📅 View Today's Practice Plan</a>
+    <a href="/optimal" class="btn btn-optimal">⭐ Optimal Techniques ({{ optimal_count }})</a>
+    <a href="/curriculum" class="btn">🎯 Belt Progress</a>
+    <a href="/wrestling" class="btn">🤼 Wrestling Advantages</a>
+</div>
+
+<div class="card">
+    <h2>About Your Build</h2>
+    <p><strong>Long legs + Wrestling = Unique hybrid game</strong></p>
+    <ul class="checklist">
+        <li>Excellent for leg-based guards (DLR, X-guard)</li>
+        <li>Triangle chokes are optimal</li>
+        <li>Wrestling takedowns and pressure</li>
+        <li>Front headlock attacks (Darce, Anaconda)</li>
+        <li>Remember: Develop guard (don't turtle!)</li>
+    </ul>
+</div>
+{% endblock %}

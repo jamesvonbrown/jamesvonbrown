@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}{{ technique.name }} - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>
+        {{ technique.name }}
+        {% if technique.optimal_for_user %}
+        <span class="optimal-badge">⭐ OPTIMAL FOR YOU</span>
+        {% endif %}
+    </h2>
+    <p>
+        <span class="belt-badge belt-{{ technique.belt_level }}">{{ technique.belt_level.upper() }} BELT</span>
+    </p>
+    <p><strong>Category:</strong> {{ technique.category }} - {{ technique.subcategory }}</p>
+    <p>{{ technique.description }}</p>
+
+    {% if technique.youtube_url %}
+    <a href="{{ technique.youtube_url }}" target="_blank" class="video-link">
+        ▶️ Watch Tutorial on YouTube
+    </a>
+    {% endif %}
+</div>
+
+{% if technique.success_rate or technique.finish_rate %}
+<div class="card">
+    <h3>📊 Competition Statistics</h3>
+    {% if technique.success_rate %}
+    <p><strong>Success Rate:</strong> {{ technique.success_rate }}</p>
+    {% endif %}
+    {% if technique.finish_rate %}
+    <p><strong>Finish Rate:</strong> {{ technique.finish_rate }}</p>
+    {% endif %}
+    {% if technique.stats_notes %}
+    <p style="margin-top: 10px;"><small>{{ technique.stats_notes }}</small></p>
+    {% endif %}
+</div>
+{% endif %}
+
+<div class="card">
+    <h3>Key Details</h3>
+    <ul class="key-details">
+    {% for detail in technique.key_details %}
+        <li>{{ detail }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+{% if stats %}
+<div class="card">
+    <h3>Your Progress</h3>
+    <p>
+        <span class="mastery-badge mastery-{{ mastery.lower().replace(' ', '') }}">
+            {{ mastery }}
+        </span>
+    </p>
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number">{{ stats.total_sessions }}</div>
+            <div class="label">Sessions</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ stats.total_minutes }}</div>
+            <div class="label">Minutes</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ stats.dummy_sessions }}</div>
+            <div class="label">Dummy</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ stats.live_sessions }}</div>
+            <div class="label">Live</div>
+        </div>
+    </div>
+    {% if stats.average_quality > 0 %}
+    <p style="margin-top: 15px;"><strong>Average Quality:</strong> {{ "%.1f"|format(stats.average_quality) }}/5</p>
+    {% endif %}
+</div>
+{% else %}
+<div class="card">
+    <p style="text-align: center; color: #9ca3af;">You haven't practiced this technique yet</p>
+    <div style="text-align: center; margin-top: 15px;">
+        <a href="/log" class="btn">✏️ Log Practice Session</a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

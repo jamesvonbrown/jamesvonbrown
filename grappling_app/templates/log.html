@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Log Practice - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>✏️ Log Practice Session</h2>
+
+    <form method="POST" action="/log">
+        <div class="form-group">
+            <label for="technique_name">Technique Name</label>
+            <input type="text" id="technique_name" name="technique_name" required placeholder="e.g. Triangle Choke">
+        </div>
+
+        <div class="form-group">
+            <label for="practice_type">Practice Type</label>
+            <select id="practice_type" name="practice_type" required>
+                <option value="dummy">Dummy/Solo Drilling</option>
+                <option value="live">Live Training/Rolling</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="duration">Duration (minutes)</label>
+            <input type="number" id="duration" name="duration" min="1" required placeholder="30">
+        </div>
+
+        <div class="form-group">
+            <label for="quality">Quality Rating (1-5)</label>
+            <select id="quality" name="quality">
+                <option value="0">Not rated</option>
+                <option value="1">1 - Poor</option>
+                <option value="2">2 - Fair</option>
+                <option value="3">3 - Good</option>
+                <option value="4">4 - Very Good</option>
+                <option value="5">5 - Excellent</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes (optional)</label>
+            <textarea id="notes" name="notes" placeholder="What worked? What needs improvement?"></textarea>
+        </div>
+
+        <button type="submit" class="btn" style="width: 100%;">Save Practice Log</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Quick Add Common Techniques</h3>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <button class="btn-small btn" onclick="fillTechnique('De La Riva Guard')">DLR</button>
+        <button class="btn-small btn" onclick="fillTechnique('Triangle Choke')">Triangle</button>
+        <button class="btn-small btn" onclick="fillTechnique('Darce Choke')">Darce</button>
+        <button class="btn-small btn" onclick="fillTechnique('X-Guard')">X-Guard</button>
+        <button class="btn-small btn" onclick="fillTechnique('Armbar from Guard')">Armbar</button>
+        <button class="btn-small btn" onclick="fillTechnique('Rear Naked Choke')">RNC</button>
+    </div>
+</div>
+
+<script>
+    function fillTechnique(name) {
+        document.getElementById('technique_name').value = name;
+    }
+</script>
+{% endblock %}

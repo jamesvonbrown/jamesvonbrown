@@ -22,6 +22,18 @@ A comprehensive submission grappling practice application specifically designed 
   - Short torso + Wrestling = Front headlock game, pressure passing
   - Leg entanglements and distance management
 
+- **🆕 Research-Based Competition Statistics**
+  - Success rates and finish rates from elite BJJ competitions (2024-2025 data)
+  - ADCC, IBJJF Worlds, CJI, EBI statistics integrated
+  - Specific data for body-type advantages
+  - 7+ key techniques include detailed competition analysis:
+    - Rear Naked Choke: 78% finish rate from back control
+    - Triangle Choke: 62% success (better with long legs - confirmed by research!)
+    - X-Guard: 63% sweep success rate
+    - Wrestling takedowns: 41% in no-gi vs 14% in gi
+    - Inside Heel Hook: 20 finishes at 2025 IBJJF No-Gi Worlds (2nd most common)
+    - And more!
+
 ### 2. Wrestling-Specific Adaptations
 - Front headlock series (Darce, Anaconda, Guillotine)
 - Pressure passing techniques (Smash pass, Stack pass)
@@ -70,14 +82,41 @@ Each belt includes:
 ### 7. YouTube Video Integration
 All techniques include curated YouTube tutorial links from top instructors.
 
+### 8. 🆕 Mobile Web Interface
+Access the full app on your phone!
+- **Mobile-optimized web interface** - responsive design for phones/tablets
+- Touch-friendly navigation with bottom menu bar
+- Log practice sessions on-the-go
+- View daily practice plans with one tap
+- Watch YouTube tutorials directly
+- See competition statistics for each technique
+- Dark mode design (easy on the eyes)
+- Works on same WiFi network as your computer
+- **See MOBILE_ACCESS.md for setup instructions**
+
 ## Installation
 
-```bash
-# Clone or navigate to the directory
-cd grappling_app
+### CLI Version (No dependencies)
 
-# No external dependencies required - uses Python 3 standard library
+```bash
+# Navigate to the directory
+cd /home/user/jamesvonbrown/grappling_app
+
+# Run the CLI app
 python3 main.py
+```
+
+### Mobile Web Version (Requires Flask)
+
+```bash
+# Install Flask (one-time)
+pip3 install Flask
+
+# Start the web server
+python3 web_app.py
+
+# Access from your phone at http://YOUR_COMPUTER_IP:5000
+# See MOBILE_ACCESS.md for detailed instructions
 ```
 
 ## Usage

@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Techniques - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>{{ title }}</h2>
+    <p>Browse by category or view all</p>
+
+    <div style="margin: 15px 0; overflow-x: auto; white-space: nowrap;">
+        <a href="/techniques" class="btn-small btn">All</a>
+        <a href="/optimal" class="btn-small btn btn-optimal">⭐ Optimal</a>
+        {% for cat in categories %}
+        <a href="/techniques?category={{ cat }}" class="btn-small btn {% if selected_category == cat %}active{% endif %}">{{ cat }}</a>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="card">
+    <h3>{{ techniques|length }} Techniques</h3>
+    <ul class="technique-list">
+    {% for tech in techniques %}
+        <li class="technique-item {% if tech.optimal_for_user %}optimal{% endif %}">
+            <h4>
+                <a href="/technique/{{ tech.name }}" style="color: inherit; text-decoration: none;">
+                    {{ tech.name }}
+                    {% if tech.optimal_for_user %}
+                    <span class="optimal-badge">⭐</span>
+                    {% endif %}
+                </a>
+            </h4>
+            <p>
+                <span class="belt-badge belt-{{ tech.belt_level }}">{{ tech.belt_level.upper() }}</span>
+                {{ tech.category }} - {{ tech.subcategory }}
+            </p>
+            <p>{{ tech.description }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}

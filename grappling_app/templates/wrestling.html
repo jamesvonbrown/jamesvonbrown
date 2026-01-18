@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Wrestling Advantages - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>🤼 Wrestling Advantages in BJJ</h2>
+    <p>Leverage your wrestling background to dominate in Brazilian Jiu-Jitsu</p>
+</div>
+
+<div class="card">
+    <h3>✓ Your Existing Strengths from Wrestling</h3>
+    <ul class="checklist">
+    {% for strength in advantages.existing_strengths %}
+        <li>{{ strength }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h3>BJJ Adaptations Needed</h3>
+    <ul class="checklist">
+    {% for adaptation in advantages.bjj_adaptations_needed %}
+        <li class="incomplete">{{ adaptation }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h3>⚠️ Common Wrestler Mistakes to Avoid</h3>
+    <ul class="key-details">
+    {% for mistake in advantages.common_wrestler_mistakes_to_avoid %}
+        <li style="color: #ef4444;">{{ mistake }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h3>🎯 Your Ideal Game Plan</h3>
+    {% for phase in advantages.ideal_game_plan %}
+    <div class="technique-item">
+        <p>{{ phase }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <h3>Body Type Advantages</h3>
+
+    <h4>Favorable Guards (Long Legs)</h4>
+    <ul class="checklist">
+    {% for guard in body_advantages.favorable_guards %}
+        <li>{{ guard }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4 style="margin-top: 15px;">Favorable Submissions</h4>
+    <ul class="checklist">
+    {% for sub in body_advantages.favorable_submissions %}
+        <li>{{ sub }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4 style="margin-top: 15px;">Favorable Takedowns</h4>
+    <ul class="checklist">
+    {% for td in body_advantages.favorable_takedowns %}
+        <li>{{ td }}</li>
+    {% endfor %}
+    </ul>
+
+    <h4 style="margin-top: 15px;">Favorable Top Game</h4>
+    <ul class="checklist">
+    {% for top in body_advantages.favorable_top_game %}
+        <li>{{ top }}</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h3>Summary</h3>
+    <p><strong>{{ body_advantages.notes }}</strong></p>
+</div>
+
+<div class="card" style="text-align: center;">
+    <a href="/optimal" class="btn btn-optimal">⭐ View Optimal Techniques</a>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Today's Practice - BJJ App{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📅 Today's Practice Plan</h2>
+    <p>{{ plan.date }} • {{ plan.total_duration }} minutes</p>
+</div>
+
+<div class="card">
+    <h3>Warm-up (10 min)</h3>
+    <ul class="checklist">
+    {% for item in plan.warm_up %}
+        <li class="incomplete">{{ item.activity}} - {{ item.duration }} min</li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="card">
+    <h3>Technique Drilling (40 min)</h3>
+    {% for drill in plan.technique_drilling %}
+    <div class="technique-item {% if drill.tech_obj and drill.tech_obj.optimal_for_user %}optimal{% endif %}">
+        <h4>
+            {{ drill.technique }}
+            {% if drill.tech_obj and drill.tech_obj.optimal_for_user %}
+            <span class="optimal-badge">⭐ OPTIMAL</span>
+            {% endif %}
+        </h4>
+        <p><strong>Duration:</strong> {{ drill.duration }} min</p>
+        <p><strong>Type:</strong> {{ drill.type.upper() }}</p>
+        <p><strong>Mode:</strong> {{ drill.practice_mode }}</p>
+        <p><strong>Focus:</strong> {{ drill.focus }}</p>
+
+        {% if drill.tech_obj and drill.tech_obj.youtube_url %}
+        <a href="{{ drill.tech_obj.youtube_url }}" target="_blank" class="video-link">
+            ▶️ Watch Tutorial
+        </a>
+        {% endif %}
+
+        {% if drill.tech_obj %}
+        <p style="margin-top: 10px;"><small>{{ drill.tech_obj.description }}</small></p>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card">
+    <h3>Live Practice (10 min)</h3>
+    <ul class="checklist">
+    {% for item in plan.live_practice %}
+        <li class="incomplete">
+            <strong>{{ item.activity }}</strong> ({{ item.duration }} min)<br>
+            <small>{{ item.focus }}</small>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+
+<div class="card" style="text-align: center;">
+    <a href="/log" class="btn">✏️ Log Today's Practice</a>
+</div>
+{% endblock %}

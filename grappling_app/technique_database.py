@@ -6,7 +6,8 @@ Hierarchical organization of BJJ techniques with body-type optimization
 class Technique:
     def __init__(self, name, category, subcategory, belt_level,
                  optimal_for_user=False, youtube_url="",
-                 description="", key_details=None):
+                 description="", key_details=None,
+                 success_rate="", finish_rate="", stats_notes=""):
         self.name = name
         self.category = category  # Position, Takedown, Submission, Escape, Pass, Sweep
         self.subcategory = subcategory
@@ -17,6 +18,10 @@ class Technique:
         self.key_details = key_details or []
         self.prerequisites = []
         self.practice_log = []
+        # Competition statistics (research-based)
+        self.success_rate = success_rate  # e.g., "63% sweep success from X-guard"
+        self.finish_rate = finish_rate    # e.g., "78% finish from back control"
+        self.stats_notes = stats_notes    # Additional context about stats
 
     def to_dict(self):
         return {
@@ -28,7 +33,10 @@ class Technique:
             "youtube_url": self.youtube_url,
             "description": self.description,
             "key_details": self.key_details,
-            "prerequisites": self.prerequisites
+            "prerequisites": self.prerequisites,
+            "success_rate": self.success_rate,
+            "finish_rate": self.finish_rate,
+            "stats_notes": self.stats_notes
         }
 
 
@@ -107,7 +115,10 @@ class TechniqueDatabase:
                 "Legs form X shape",
                 "Elevate opponent",
                 "Great for sweeps"
-            ]
+            ],
+            success_rate="63% sweep success rate",
+            finish_rate="Primarily sweeping platform (submissions rare)",
+            stats_notes="HIGH PERCENTAGE GUARD - 63% sweep success at white/blue belt (140 tournament study). Long legs give superior elevation and control. One of the best positions for your build."
         ))
 
         self.add_technique(Technique(
@@ -293,7 +304,10 @@ class TechniqueDatabase:
                 "Head to outside",
                 "Grab behind knees",
                 "Drive through opponent"
-            ]
+            ],
+            success_rate="41% match-takedown ratio (no-gi) vs 14% (gi)",
+            finish_rate="Nearly 3x more effective in no-gi",
+            stats_notes="WRESTLING DOMINANCE - No-gi takedowns (41%) vastly outperform gi (14%). 62 takedowns at ADCC 2024 alone (more than all 2022 categories combined). Your wrestling background gives massive advantage, especially in no-gi. 'Remove the gi-grip and double legs rule the game.'"
         ))
 
         self.add_technique(Technique(
@@ -398,7 +412,10 @@ class TechniqueDatabase:
                 "Lock figure-four",
                 "Squeeze elbows together",
                 "Expand chest"
-            ]
+            ],
+            success_rate="22% of all submissions",
+            finish_rate="78% finish rate from back control",
+            stats_notes="KING OF SUBMISSIONS - Most common finish in elite BJJ (26 finishes at 2025 IBJJF No-Gi Worlds). If you get the back, you'll finish 78% of the time."
         ))
 
         self.add_technique(Technique(
@@ -415,7 +432,10 @@ class TechniqueDatabase:
                 "Lock triangle (foot behind knee)",
                 "Angle off",
                 "Pull head down, lift hips"
-            ]
+            ],
+            success_rate="62% success rate (gi), 38% at lower belts",
+            finish_rate="Top 3 submission at white-purple belts",
+            stats_notes="PERFECT FOR LONG LEGS - Research confirms 'lanky guard players with exceptional hip flexibility' see better-than-average success. 28 finishes from 45 attempts (62%) at IBJJF Worlds 2019."
         ))
 
         self.add_technique(Technique(
@@ -482,7 +502,10 @@ class TechniqueDatabase:
                 "Leg over head, leg across body",
                 "Hips high, knees tight",
                 "Thumbs up, extend hips"
-            ]
+            ],
+            success_rate="19.5% of all submissions",
+            finish_rate="Top 3 most successful submission",
+            stats_notes="ELITE SUBMISSION - 2nd most common overall (19.5%). Long legs provide better angle and control. 10 finishes at 2025 IBJJF No-Gi Worlds. Fundamental for all belts."
         ))
 
         self.add_technique(Technique(
@@ -584,7 +607,10 @@ class TechniqueDatabase:
                 "Only legal at brown/black (IBJJF)",
                 "Inside position",
                 "Control heel and rotate"
-            ]
+            ],
+            success_rate="8% of ADCC submissions (growing trend)",
+            finish_rate="62% success from saddle position",
+            stats_notes="MODERN LEG LOCK GAME - 20 finishes at 2025 IBJJF No-Gi Worlds (2nd most common submission). Percentage doubled in last 5 years. Optimal for long-legged players from SLX entries. Brown/Black belt only (IBJJF). TAP EARLY - causes severe damage instantly."
         ))
 
         self.add_technique(Technique(
@@ -829,7 +855,10 @@ class TechniqueDatabase:
                 "Lock hands (various grips)",
                 "Squeeze bicep to neck",
                 "Natural for wrestlers"
-            ]
+            ],
+            success_rate="12% submission rate in pro competition",
+            finish_rate="60% of successful finishes occur from transitions",
+            stats_notes="WRESTLER'S SUBMISSION - Preferred in IBJJF no-gi divisions. Best hit from front headlock or turtle transitions (your wrestling strength). 20 D'arce finishes in UFC history."
         ))
 
         self.add_technique(Technique(
