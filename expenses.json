@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "date": "2026-08-21",
+    "time": "11:26:56 AM",
+    "vendor": "13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR",
+    "category": "Fuel",
+    "amount": 35.0,
+    "description": "7.849 gal, $4.459/gal, Pump #7",
+    "raw_text": "13939 SE McLoughlin\nH&S 3096 Oakgrove Ch\n3096\nMilwaukie, OR\n97267\n08/21/2026\n11:26:56 AM\nPREPAID RECEIPT\nPUMP# 7\nUNLEAD REG    7.849G\nPRICE/GAL     $4.459\nFUEL TOTAL  $ 35.00"
+  }
+]

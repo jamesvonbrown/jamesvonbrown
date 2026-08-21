@@ -108,3 +108,72 @@ This is a free, open-source game. Feel free to modify and share!
 Created as a classic text-based RPG adventure.
 
 Enjoy your adventure in the Forgotten Realm!
+
+---
+
+# Receipt Chat -- Expense Tracker
+
+A small conversational CLI for logging expenses, with a parser that pulls
+vendor, date, category, and amount out of pasted receipt text. No external
+dependencies -- just the Python standard library.
+
+## Usage
+
+```bash
+python3 receipt_chat.py
+```
+
+```
+you> paste
+Paste the receipt text below. Enter a blank line when done.
+<paste your receipt text, then press Enter on a blank line>
+Parsed: 13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR on 2026-08-21 -- $35.00 (Fuel)
+Details: 7.849 gal, $4.459/gal, Pump #7
+Save this expense? [Y/n]: y
+Saved as expense #1.
+
+you> how much did I spend on fuel this month
+Total for Fuel in 2026-08: $35.00 (1 expense(s))
+  Fuel         $35.00
+
+you> list
+ID  Date       Category       Amount  Vendor
+#1   2026-08-21 Fuel       $   35.00  13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR
+
+1 expense(s), total $35.00
+```
+
+### Commands
+
+| Command | Description |
+| --- | --- |
+| `add` | Log an expense by answering a few prompts |
+| `paste` | Paste raw receipt text; vendor/date/category/amount are extracted automatically |
+| `list [filters]` | List expenses (`category:`, `vendor:`, `month:YYYY-MM`, `year:YYYY`, `date:YYYY-MM-DD`) |
+| `total [filters]` | Show total spent, with a per-category breakdown |
+| `delete <id>` | Remove an expense |
+| `help` | Show the command list |
+| `exit` / `quit` | Leave the chat |
+
+You can also just type things like `"show my dining expenses"` or `"how much
+did I spend on fuel this month"` and it'll figure out the filters.
+
+### How receipt parsing works
+
+`paste` (and the underlying `parse_receipt_text()` function) looks for a
+date, a `TOTAL`/`FUEL TOTAL` line, and keyword hints (e.g. `PUMP#`,
+`UNLEAD`, `grocery`, `restaurant`) to guess the category. It's tuned against
+a real gas station receipt in `examples/sample_gas_receipt.txt` -- run
+`python3 receipt_chat.py --demo` to see it parsed without saving anything.
+
+There's no image/OCR step built in (no OCR library is bundled), so receipts
+need to be provided as text -- either typed by hand or transcribed from a
+photo.
+
+Expenses are stored in `expenses.json` (override with `--store <path>`).
+
+### Tests
+
+```bash
+python3 -m unittest test_receipt_chat -v
+```
