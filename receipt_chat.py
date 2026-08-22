@@ -180,6 +180,10 @@ def parse_receipt_text(text):
             continue  # skip pure separator lines like "**********"
         if "$" in line:
             break  # reached line items / totals, which come after the header
+        if vendor_lines and line.rstrip().endswith("."):
+            continue  # skip marketing taglines after the store name, e.g.
+                       # "How doers get more done." -- addresses/phone/store
+                       # name lines don't end in sentence-style punctuation
         vendor_lines.append(line)
     vendor = ", ".join(vendor_lines[:3]) if vendor_lines else lines[0]
 

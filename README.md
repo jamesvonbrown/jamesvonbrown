@@ -141,8 +141,9 @@ ID  Date       Category       Amount  Vendor
 #1   2026-08-21 Fuel       $   35.00  13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR
 #2   2026-08-22 Home & Garden $   31.98  ACE HARDWARE #11075 (m), (503) 653-2223
 #3   2026-08-22 Fuel       $   25.00  VP Racing, 17873 McLoughlin, Portland OR 97267
+#4   2026-08-22 Home & Garden $   53.88  THE HOME DEPOT, 2002 WASHINGTON STREET, OREGON CITY, OR 97045 (503)723-3181
 
-3 expense(s), total $91.98
+4 expense(s), total $145.86
 ```
 
 Expense #3 is a fuel pump preauth hold rather than a final "FUEL TOTAL" --
@@ -174,11 +175,17 @@ did I spend on fuel this month"` and it'll figure out the filters.
 `paste` (and the underlying `parse_receipt_text()` function) looks for a
 date (2- or 4-digit year), a `TOTAL`/`FUEL TOTAL` line, and keyword hints
 (fuel brands like `Chevron`/`Shell`/`VP Racing`, or words like `PUMP#`,
-`UNLEAD`, `hardware`, `grocery`, `restaurant`) to guess the category. It's
-tuned against three real receipts in `examples/` -- a gas station total, a
-hardware store sale, and a fuel pump preauth hold -- run
-`python3 receipt_chat.py --demo` to see the first one parsed without saving
-anything.
+`UNLEAD`, `hardware`, `grocery`, `restaurant`) to guess the category, while
+skipping greeting boilerplate ("Thank you for shopping at"), separator
+lines, and marketing taglines ("How doers get more done.") when guessing
+the vendor. It's tuned against four real receipts in `examples/` -- a gas
+station total, a hardware store sale, a fuel pump preauth hold, and a
+self-checkout sale -- run `python3 receipt_chat.py --demo` to see the first
+one parsed without saving anything.
+
+Categorization is vendor-based, not item-based: a bottle of bleach bought
+at Home Depot lands in "Home & Garden" because of *where* it was bought,
+not what it is.
 
 There's no image/OCR step built in (no OCR library is bundled), so receipts
 need to be provided as text -- either typed by hand or transcribed from a

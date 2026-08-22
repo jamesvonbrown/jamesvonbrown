@@ -28,5 +28,15 @@
     "amount": 25.0,
     "description": "preauth hold -- actual charge may differ",
     "raw_text": "WELCOME TO\nOUR STORE\n**********\nVP Racing\n17873 McLoughlin\nPortland OR 97267\n\n***PRE-AUTHORIZED RECEIPT***\n\nDescription          Qty    Amount\nPREPAY CR #07                25.00\n\nSubtotal                     25.00\nTOTAL                        25.00\nPREAUTH  $  25.00\n\nPREPAY Receipt\nUSD$25.00\nAcct/Card #: ****************0779\nEntry: Contactless ICC\nAppName: US DEBIT\nAuthNet: INTERLNK\nMODE: Issuer\nAID: A000000980840\nAuth #: 455713\nResp Code: 000\nStan: 0691655276\nInvoice #: 610777\nShift #: 1\nStore # ****************\n\nVerified By PIN\nNo Signature Needed\n\nMERCHANT COPY\n\nST#AB123\nCSH: 1\nDR#1  TRAN#1029571\n8/22/26  11:01:17 AM"
+  },
+  {
+    "id": 4,
+    "date": "2026-08-22",
+    "time": "11:24 AM",
+    "vendor": "THE HOME DEPOT, 2002 WASHINGTON STREET, OREGON CITY, OR 97045 (503)723-3181",
+    "category": "Home & Garden",
+    "amount": 53.88,
+    "description": "",
+    "raw_text": "THE HOME DEPOT\nHow doers get more done.\n\n2002 WASHINGTON STREET\nOREGON CITY, OR 97045 (503)723-3181\n\n4017  00061  98949    08/22/26  11:24 AM\nSALE SELF CHECKOUT\n\n044600324166 CLXDISBLC121 <A>\n   CLOROX DISINFECTING BLEACH 121OZ\n   6@8.98                              53.88N\n\n                    SUBTOTAL           53.88\n                    SALES TAX           0.00\n                    TOTAL             $53.88\nXXXXXXXXXXXX0779 DEBIT\n                    USD$ 53.88"
   }
 ]

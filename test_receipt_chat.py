@@ -73,6 +73,26 @@ DR#1  TRAN#1029571
 8/22/26  11:01:17 AM
 """
 
+HOME_DEPOT_RECEIPT = """THE HOME DEPOT
+How doers get more done.
+
+2002 WASHINGTON STREET
+OREGON CITY, OR 97045 (503)723-3181
+
+4017  00061  98949    08/22/26  11:24 AM
+SALE SELF CHECKOUT
+
+044600324166 CLXDISBLC121 <A>
+   CLOROX DISINFECTING BLEACH 121OZ
+   6@8.98                              53.88N
+
+                    SUBTOTAL           53.88
+                    SALES TAX           0.00
+                    TOTAL             $53.88
+XXXXXXXXXXXX0779 DEBIT
+                    USD$ 53.88
+"""
+
 
 class ParseReceiptTextTests(unittest.TestCase):
     def test_parses_gas_station_receipt(self):
@@ -151,6 +171,27 @@ class ParseReceiptTextTests(unittest.TestCase):
     def test_separator_and_filler_lines_excluded_from_vendor(self):
         parsed = rc.parse_receipt_text("Welcome to\nOur Store\n**********\nReal Vendor\n03/04/2026\nTOTAL: $1.23")
         self.assertEqual(parsed["vendor"], "Real Vendor")
+
+    def test_parses_home_depot_receipt(self):
+        parsed = rc.parse_receipt_text(HOME_DEPOT_RECEIPT)
+        self.assertEqual(parsed["date"], "2026-08-22")
+        self.assertEqual(parsed["time"], "11:24 AM")
+        self.assertEqual(parsed["category"], "Home & Garden")
+        self.assertAlmostEqual(parsed["amount"], 53.88)
+        self.assertEqual(parsed["vendor"], "THE HOME DEPOT, 2002 WASHINGTON STREET, OREGON CITY, OR 97045 (503)723-3181")
+
+    def test_marketing_tagline_excluded_from_vendor(self):
+        parsed = rc.parse_receipt_text(
+            "The Store\nSpend less. Smile more.\n123 Main St\n03/04/2026\nTOTAL: $1.23"
+        )
+        self.assertNotIn("Smile more", parsed["vendor"])
+        self.assertEqual(parsed["vendor"], "The Store, 123 Main St")
+
+    def test_tagline_filter_does_not_drop_first_line_ending_in_period(self):
+        # Only lines *after* the store name are checked for tagline-style
+        # punctuation, so a business name itself ending in "Inc." survives.
+        parsed = rc.parse_receipt_text("Smith Hardware Inc.\n123 Main St\n03/04/2026\nTOTAL: $1.23")
+        self.assertIn("Smith Hardware Inc.", parsed["vendor"])
 
 
 class CategorizeTests(unittest.TestCase):
