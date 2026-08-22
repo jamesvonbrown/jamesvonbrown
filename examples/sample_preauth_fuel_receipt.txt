@@ -1,0 +1,40 @@
+WELCOME TO
+OUR STORE
+**********
+VP Racing
+17873 McLoughlin
+Portland OR 97267
+
+***PRE-AUTHORIZED RECEIPT***
+
+Description          Qty    Amount
+PREPAY CR #07                25.00
+
+Subtotal                     25.00
+TOTAL                        25.00
+PREAUTH  $  25.00
+
+PREPAY Receipt
+USD$25.00
+Acct/Card #: ****************0779
+Entry: Contactless ICC
+AppName: US DEBIT
+AuthNet: INTERLNK
+MODE: Issuer
+AID: A000000980840
+Auth #: 455713
+Resp Code: 000
+Stan: 0691655276
+Invoice #: 610777
+Shift #: 1
+Store # ****************
+
+Verified By PIN
+No Signature Needed
+
+MERCHANT COPY
+
+ST#AB123
+CSH: 1
+DR#1  TRAN#1029571
+8/22/26  11:01:17 AM

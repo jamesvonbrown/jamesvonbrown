@@ -18,5 +18,15 @@
     "amount": 31.98,
     "description": "",
     "raw_text": "THANK YOU FOR SHOPPING AT\nACE HARDWARE #11075 (m)\n(503) 653-2223\n\n7166127\nMOSS-B-WARE 3 LB     2 EA  $15.99 EA  $31.98         SALE\n\n08/22/26  10:48AM  PAULDOD\n\nSUB-TOTAL:$          31.98\nTAX:      $             .00\nTOTAL:    $          31.98"
+  },
+  {
+    "id": 3,
+    "date": "2026-08-22",
+    "time": "11:01:17 AM",
+    "vendor": "VP Racing, 17873 McLoughlin, Portland OR 97267",
+    "category": "Fuel",
+    "amount": 25.0,
+    "description": "preauth hold -- actual charge may differ",
+    "raw_text": "WELCOME TO\nOUR STORE\n**********\nVP Racing\n17873 McLoughlin\nPortland OR 97267\n\n***PRE-AUTHORIZED RECEIPT***\n\nDescription          Qty    Amount\nPREPAY CR #07                25.00\n\nSubtotal                     25.00\nTOTAL                        25.00\nPREAUTH  $  25.00\n\nPREPAY Receipt\nUSD$25.00\nAcct/Card #: ****************0779\nEntry: Contactless ICC\nAppName: US DEBIT\nAuthNet: INTERLNK\nMODE: Issuer\nAID: A000000980840\nAuth #: 455713\nResp Code: 000\nStan: 0691655276\nInvoice #: 610777\nShift #: 1\nStore # ****************\n\nVerified By PIN\nNo Signature Needed\n\nMERCHANT COPY\n\nST#AB123\nCSH: 1\nDR#1  TRAN#1029571\n8/22/26  11:01:17 AM"
   }
 ]

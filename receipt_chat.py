@@ -19,7 +19,13 @@ SAMPLE_RECEIPT_PATH = os.path.join(
 )
 
 CATEGORY_KEYWORDS = {
-    "Fuel": ["pump#", "unlead", "unleaded", "diesel", "fuel total", "price/gal"],
+    "Fuel": [
+        "pump#", "unlead", "unleaded", "diesel", "fuel total", "price/gal",
+        # Common fuel brands -- a preauth/prepay receipt (e.g. "PREPAY CR #07")
+        # often has no other fuel-specific wording at all, just the brand name.
+        "vp racing", "chevron", "shell", "exxon", "mobil", "arco", "conoco",
+        "texaco", "circle k",
+    ],
     "Groceries": ["grocery", "market", "safeway", "kroger", "trader joe", "whole foods"],
     "Dining": ["restaurant", "cafe", "diner", "grill", "pizza", "coffee", "bar & grill"],
     "Pharmacy": ["pharmacy", "walgreens", "cvs", "rite aid"],
@@ -36,6 +42,7 @@ CATEGORY_ALIASES = {
 
 # Boilerplate lines to ignore when guessing the vendor from the top of a receipt.
 VENDOR_BOILERPLATE_PREFIXES = ("thank you", "welcome to")
+VENDOR_BOILERPLATE_LINES = {"our store"}
 
 DATE_RE = re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{2}|\d{4})\b")
 TIME_RE = re.compile(r"\b(\d{1,2}:\d{2}(?::\d{2})?\s*[AP]M)\b", re.IGNORECASE)
@@ -46,6 +53,7 @@ GENERIC_TOTAL_RE = re.compile(r"^\s*TOTAL\s*:?\s*\$?\s*([\d,]+\.\d{2})", re.IGNO
 GALLONS_RE = re.compile(r"([\d.]+)\s*G(?:AL)?\b", re.IGNORECASE)
 PRICE_PER_GAL_RE = re.compile(r"PRICE/GAL\s*\$?\s*([\d.]+)", re.IGNORECASE)
 PUMP_RE = re.compile(r"PUMP#\s*(\d+)", re.IGNORECASE)
+PREAUTH_RE = re.compile(r"pre-?auth", re.IGNORECASE)
 
 HELP_TEXT = """\
 Receipt Chat -- commands:
@@ -166,6 +174,10 @@ def parse_receipt_text(text):
             continue  # skip bare store numbers / zip codes
         if line.lower().startswith(VENDOR_BOILERPLATE_PREFIXES):
             continue  # skip greeting lines like "Thank you for shopping at"
+        if line.lower() in VENDOR_BOILERPLATE_LINES:
+            continue  # skip generic filler like "Our Store"
+        if not re.search(r"[A-Za-z0-9]", line):
+            continue  # skip pure separator lines like "**********"
         if "$" in line:
             break  # reached line items / totals, which come after the header
         vendor_lines.append(line)
@@ -188,6 +200,8 @@ def parse_receipt_text(text):
     gallons_match = GALLONS_RE.search(text)
     price_gal_match = PRICE_PER_GAL_RE.search(text)
     pump_match = PUMP_RE.search(text)
+    if PREAUTH_RE.search(text):
+        details.append("preauth hold -- actual charge may differ")
     if gallons_match:
         details.append(f"{gallons_match.group(1)} gal")
     if price_gal_match:

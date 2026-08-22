@@ -48,6 +48,31 @@ TAX:      $             .00
 TOTAL:    $          31.98
 """
 
+PREAUTH_FUEL_RECEIPT = """WELCOME TO
+OUR STORE
+**********
+VP Racing
+17873 McLoughlin
+Portland OR 97267
+
+***PRE-AUTHORIZED RECEIPT***
+
+Description          Qty    Amount
+PREPAY CR #07                25.00
+
+Subtotal                     25.00
+TOTAL                        25.00
+PREAUTH  $  25.00
+
+PREPAY Receipt
+USD$25.00
+
+MERCHANT COPY
+
+DR#1  TRAN#1029571
+8/22/26  11:01:17 AM
+"""
+
 
 class ParseReceiptTextTests(unittest.TestCase):
     def test_parses_gas_station_receipt(self):
@@ -110,6 +135,23 @@ class ParseReceiptTextTests(unittest.TestCase):
         self.assertNotIn("Welcome", parsed["vendor"])
         self.assertIn("Real Vendor Name", parsed["vendor"])
 
+    def test_parses_preauth_fuel_receipt(self):
+        # No fuel-specific wording in the body at all (no "pump#"/"gal"/etc) --
+        # only the brand name signals this is a gas station, and it's a
+        # PREAUTH hold rather than a final "FUEL TOTAL", both of which the
+        # generic-format regexes above wouldn't otherwise catch.
+        parsed = rc.parse_receipt_text(PREAUTH_FUEL_RECEIPT)
+        self.assertEqual(parsed["date"], "2026-08-22")
+        self.assertEqual(parsed["time"], "11:01:17 AM")
+        self.assertEqual(parsed["category"], "Fuel")
+        self.assertAlmostEqual(parsed["amount"], 25.00)
+        self.assertEqual(parsed["vendor"], "VP Racing, 17873 McLoughlin, Portland OR 97267")
+        self.assertIn("preauth", parsed["description"].lower())
+
+    def test_separator_and_filler_lines_excluded_from_vendor(self):
+        parsed = rc.parse_receipt_text("Welcome to\nOur Store\n**********\nReal Vendor\n03/04/2026\nTOTAL: $1.23")
+        self.assertEqual(parsed["vendor"], "Real Vendor")
+
 
 class CategorizeTests(unittest.TestCase):
     def test_groceries_keyword(self):
@@ -120,6 +162,9 @@ class CategorizeTests(unittest.TestCase):
 
     def test_hardware_keyword(self):
         self.assertEqual(rc.categorize("ACE HARDWARE #11075 TOTAL $31.98"), "Home & Garden")
+
+    def test_fuel_brand_name_with_no_other_fuel_wording(self):
+        self.assertEqual(rc.categorize("VP Racing\nPREPAY CR #07\nTOTAL 25.00"), "Fuel")
 
 
 class ExpenseStoreTests(unittest.TestCase):

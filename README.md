@@ -140,9 +140,15 @@ you> list
 ID  Date       Category       Amount  Vendor
 #1   2026-08-21 Fuel       $   35.00  13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR
 #2   2026-08-22 Home & Garden $   31.98  ACE HARDWARE #11075 (m), (503) 653-2223
+#3   2026-08-22 Fuel       $   25.00  VP Racing, 17873 McLoughlin, Portland OR 97267
 
-2 expense(s), total $66.98
+3 expense(s), total $91.98
 ```
+
+Expense #3 is a fuel pump preauth hold rather than a final "FUEL TOTAL" --
+when a receipt says `PREAUTH`/`PRE-AUTHORIZED`, the description is flagged
+`preauth hold -- actual charge may differ`, since the amount actually
+charged for the fuel pumped can come in lower than the hold.
 
 The `.` terminator (rather than a blank line) is deliberate -- real receipts
 routinely have blank lines between the header, line items, and totals, so a
@@ -167,11 +173,12 @@ did I spend on fuel this month"` and it'll figure out the filters.
 
 `paste` (and the underlying `parse_receipt_text()` function) looks for a
 date (2- or 4-digit year), a `TOTAL`/`FUEL TOTAL` line, and keyword hints
-(e.g. `PUMP#`, `UNLEAD`, `hardware`, `grocery`, `restaurant`) to guess the
-category. It's tuned against two real receipts in `examples/` --
-`sample_gas_receipt.txt` and `sample_hardware_receipt.txt` -- run
-`python3 receipt_chat.py --demo` to see the gas receipt parsed without
-saving anything.
+(fuel brands like `Chevron`/`Shell`/`VP Racing`, or words like `PUMP#`,
+`UNLEAD`, `hardware`, `grocery`, `restaurant`) to guess the category. It's
+tuned against three real receipts in `examples/` -- a gas station total, a
+hardware store sale, and a fuel pump preauth hold -- run
+`python3 receipt_chat.py --demo` to see the first one parsed without saving
+anything.
 
 There's no image/OCR step built in (no OCR library is bundled), so receipts
 need to be provided as text -- either typed by hand or transcribed from a
