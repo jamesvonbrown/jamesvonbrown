@@ -125,8 +125,8 @@ python3 receipt_chat.py
 
 ```
 you> paste
-Paste the receipt text below. Enter a blank line when done.
-<paste your receipt text, then press Enter on a blank line>
+Paste the receipt text below. Type '.' on its own line when done.
+<paste your receipt text, then type . on its own line>
 Parsed: 13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR on 2026-08-21 -- $35.00 (Fuel)
 Details: 7.849 gal, $4.459/gal, Pump #7
 Save this expense? [Y/n]: y
@@ -139,9 +139,14 @@ Total for Fuel in 2026-08: $35.00 (1 expense(s))
 you> list
 ID  Date       Category       Amount  Vendor
 #1   2026-08-21 Fuel       $   35.00  13939 SE McLoughlin, H&S 3096 Oakgrove Ch, Milwaukie, OR
+#2   2026-08-22 Home & Garden $   31.98  ACE HARDWARE #11075 (m), (503) 653-2223
 
-1 expense(s), total $35.00
+2 expense(s), total $66.98
 ```
+
+The `.` terminator (rather than a blank line) is deliberate -- real receipts
+routinely have blank lines between the header, line items, and totals, so a
+blank line can't be used to mean "done pasting".
 
 ### Commands
 
@@ -161,10 +166,12 @@ did I spend on fuel this month"` and it'll figure out the filters.
 ### How receipt parsing works
 
 `paste` (and the underlying `parse_receipt_text()` function) looks for a
-date, a `TOTAL`/`FUEL TOTAL` line, and keyword hints (e.g. `PUMP#`,
-`UNLEAD`, `grocery`, `restaurant`) to guess the category. It's tuned against
-a real gas station receipt in `examples/sample_gas_receipt.txt` -- run
-`python3 receipt_chat.py --demo` to see it parsed without saving anything.
+date (2- or 4-digit year), a `TOTAL`/`FUEL TOTAL` line, and keyword hints
+(e.g. `PUMP#`, `UNLEAD`, `hardware`, `grocery`, `restaurant`) to guess the
+category. It's tuned against two real receipts in `examples/` --
+`sample_gas_receipt.txt` and `sample_hardware_receipt.txt` -- run
+`python3 receipt_chat.py --demo` to see the gas receipt parsed without
+saving anything.
 
 There's no image/OCR step built in (no OCR library is bundled), so receipts
 need to be provided as text -- either typed by hand or transcribed from a

@@ -34,6 +34,20 @@ INSIDE
 Customer Copy
 """
 
+HARDWARE_RECEIPT = """THANK YOU FOR SHOPPING AT
+ACE HARDWARE #11075 (m)
+(503) 653-2223
+
+7166127
+MOSS-B-WARE 3 LB     2 EA  $15.99 EA  $31.98         SALE
+
+08/22/26  10:48AM  PAULDOD
+
+SUB-TOTAL:$          31.98
+TAX:      $             .00
+TOTAL:    $          31.98
+"""
+
 
 class ParseReceiptTextTests(unittest.TestCase):
     def test_parses_gas_station_receipt(self):
@@ -67,6 +81,35 @@ class ParseReceiptTextTests(unittest.TestCase):
         self.assertEqual(parsed["amount"], 12.50)
         self.assertEqual(parsed["category"], "Dining")
 
+    def test_parses_hardware_store_receipt(self):
+        parsed = rc.parse_receipt_text(HARDWARE_RECEIPT)
+        self.assertEqual(parsed["date"], "2026-08-22")
+        self.assertEqual(parsed["time"], "10:48AM")
+        self.assertEqual(parsed["category"], "Home & Garden")
+        self.assertAlmostEqual(parsed["amount"], 31.98)
+        self.assertEqual(parsed["vendor"], "ACE HARDWARE #11075 (m), (503) 653-2223")
+
+    def test_two_digit_year_expands_to_2000s(self):
+        parsed = rc.parse_receipt_text("Some Shop\n03/04/09  9:00AM\nTOTAL: $1.23")
+        self.assertEqual(parsed["date"], "2009-03-04")
+
+    def test_time_without_seconds(self):
+        parsed = rc.parse_receipt_text("Some Shop\n03/04/2026  9:15AM\nTOTAL: $1.23")
+        self.assertEqual(parsed["time"], "9:15AM")
+
+    def test_total_not_confused_with_sub_total(self):
+        # SUB-TOTAL and TOTAL differ here (tax applied) -- make sure the real
+        # TOTAL line wins rather than the first "...TOTAL" match in the text.
+        parsed = rc.parse_receipt_text(
+            "Some Shop\n03/04/2026  9:15AM\nSUB-TOTAL:$10.00\nTAX:$1.00\nTOTAL:$11.00"
+        )
+        self.assertEqual(parsed["amount"], 11.00)
+
+    def test_boilerplate_greeting_excluded_from_vendor(self):
+        parsed = rc.parse_receipt_text("Welcome to Some Shop\nReal Vendor Name\n03/04/2026\nTOTAL: $1.23")
+        self.assertNotIn("Welcome", parsed["vendor"])
+        self.assertIn("Real Vendor Name", parsed["vendor"])
+
 
 class CategorizeTests(unittest.TestCase):
     def test_groceries_keyword(self):
@@ -74,6 +117,9 @@ class CategorizeTests(unittest.TestCase):
 
     def test_unknown_defaults_to_other(self):
         self.assertEqual(rc.categorize("Random Shop TOTAL $5.00"), "Other")
+
+    def test_hardware_keyword(self):
+        self.assertEqual(rc.categorize("ACE HARDWARE #11075 TOTAL $31.98"), "Home & Garden")
 
 
 class ExpenseStoreTests(unittest.TestCase):
@@ -183,6 +229,48 @@ class CommandHandlingTests(unittest.TestCase):
     def test_freeform_unrecognized(self):
         output = rc.handle_freeform(self.store, "what's the weather like")
         self.assertIn("didn't understand", output)
+
+
+class InteractiveFlowTests(unittest.TestCase):
+    """Drives the input()-based flows directly, since they bypass handle_*()."""
+
+    def setUp(self):
+        fd, self.path = tempfile.mkstemp(suffix=".json")
+        os.close(fd)
+        os.remove(self.path)
+        self.store = rc.ExpenseStore(self.path)
+
+    def tearDown(self):
+        if os.path.exists(self.path):
+            os.remove(self.path)
+
+    @patch("builtins.input")
+    def test_paste_survives_blank_lines_within_the_receipt(self, mock_input):
+        # Real, multi-section receipts routinely contain blank lines between
+        # the header/items/total blocks -- paste must not stop at the first one.
+        responses = iter(["Some Shop", "", "03/04/2026 9:00AM", "", "TOTAL: $12.34", ".", "y"])
+        mock_input.side_effect = lambda *a: next(responses)
+        rc.paste_receipt_interactive(self.store)
+        self.assertEqual(len(self.store.expenses), 1)
+        self.assertEqual(self.store.expenses[0].amount, 12.34)
+
+    @patch("builtins.input")
+    def test_paste_declined_is_not_saved(self, mock_input):
+        responses = iter(["Some Shop", "03/04/2026", "TOTAL: $5.00", ".", "n"])
+        mock_input.side_effect = lambda *a: next(responses)
+        rc.paste_receipt_interactive(self.store)
+        self.assertEqual(len(self.store.expenses), 0)
+
+    @patch("builtins.input")
+    def test_add_expense_interactive(self, mock_input):
+        responses = iter(["Corner Cafe", "2026-08-22", "Dining", "12.50", "lunch"])
+        mock_input.side_effect = lambda *a: next(responses)
+        rc.add_expense_interactive(self.store)
+        self.assertEqual(len(self.store.expenses), 1)
+        expense = self.store.expenses[0]
+        self.assertEqual(expense.vendor, "Corner Cafe")
+        self.assertEqual(expense.amount, 12.50)
+        self.assertEqual(expense.category, "Dining")
 
 
 if __name__ == "__main__":

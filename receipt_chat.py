@@ -23,6 +23,7 @@ CATEGORY_KEYWORDS = {
     "Groceries": ["grocery", "market", "safeway", "kroger", "trader joe", "whole foods"],
     "Dining": ["restaurant", "cafe", "diner", "grill", "pizza", "coffee", "bar & grill"],
     "Pharmacy": ["pharmacy", "walgreens", "cvs", "rite aid"],
+    "Home & Garden": ["hardware", "ace hardware", "home depot", "lowe's", "lowes", "garden center"],
 }
 
 CATEGORY_ALIASES = {
@@ -30,12 +31,18 @@ CATEGORY_ALIASES = {
     "groceries": "Groceries", "grocery": "Groceries",
     "dining": "Dining", "restaurant": "Dining", "restaurants": "Dining", "food": "Dining",
     "pharmacy": "Pharmacy", "meds": "Pharmacy", "medicine": "Pharmacy",
+    "hardware": "Home & Garden", "home": "Home & Garden", "garden": "Home & Garden",
 }
 
-DATE_RE = re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{4})\b")
-TIME_RE = re.compile(r"\b(\d{1,2}:\d{2}:\d{2}\s*[AP]M)\b", re.IGNORECASE)
-FUEL_TOTAL_RE = re.compile(r"FUEL\s+TOTAL\s*\$?\s*([\d,]+\.\d{2})", re.IGNORECASE)
-GENERIC_TOTAL_RE = re.compile(r"\bTOTAL\s*\$?\s*([\d,]+\.\d{2})", re.IGNORECASE)
+# Boilerplate lines to ignore when guessing the vendor from the top of a receipt.
+VENDOR_BOILERPLATE_PREFIXES = ("thank you", "welcome to")
+
+DATE_RE = re.compile(r"\b(\d{1,2})/(\d{1,2})/(\d{2}|\d{4})\b")
+TIME_RE = re.compile(r"\b(\d{1,2}:\d{2}(?::\d{2})?\s*[AP]M)\b", re.IGNORECASE)
+FUEL_TOTAL_RE = re.compile(r"FUEL\s+TOTAL\s*:?\s*\$?\s*([\d,]+\.\d{2})", re.IGNORECASE)
+# Anchored to the start of a line so it doesn't match "SUB-TOTAL" (which also
+# satisfies a bare \bTOTAL\b search, since '-' counts as a word boundary).
+GENERIC_TOTAL_RE = re.compile(r"^\s*TOTAL\s*:?\s*\$?\s*([\d,]+\.\d{2})", re.IGNORECASE | re.MULTILINE)
 GALLONS_RE = re.compile(r"([\d.]+)\s*G(?:AL)?\b", re.IGNORECASE)
 PRICE_PER_GAL_RE = re.compile(r"PRICE/GAL\s*\$?\s*([\d.]+)", re.IGNORECASE)
 PUMP_RE = re.compile(r"PUMP#\s*(\d+)", re.IGNORECASE)
@@ -43,7 +50,7 @@ PUMP_RE = re.compile(r"PUMP#\s*(\d+)", re.IGNORECASE)
 HELP_TEXT = """\
 Receipt Chat -- commands:
   add                     Add an expense by answering a few prompts
-  paste                   Paste raw receipt text (end with a blank line);
+  paste                   Paste raw receipt text (type '.' on its own line when done);
                            vendor/date/category/amount are pulled out for you
   list [filters]          List expenses. Filters: category:<name> vendor:<text>
                            month:<YYYY-MM> year:<YYYY> date:<YYYY-MM-DD>
@@ -145,7 +152,10 @@ def parse_receipt_text(text):
     date = ""
     if date_match:
         mm, dd, yyyy = date_match.groups()
-        date = f"{yyyy}-{int(mm):02d}-{int(dd):02d}"
+        year = int(yyyy)
+        if year < 100:  # 2-digit year, e.g. "08/22/26"
+            year += 2000
+        date = f"{year:04d}-{int(mm):02d}-{int(dd):02d}"
     time_str = time_match.group(1).upper() if time_match else ""
 
     vendor_lines = []
@@ -154,6 +164,10 @@ def parse_receipt_text(text):
             break
         if line.isdigit():
             continue  # skip bare store numbers / zip codes
+        if line.lower().startswith(VENDOR_BOILERPLATE_PREFIXES):
+            continue  # skip greeting lines like "Thank you for shopping at"
+        if "$" in line:
+            break  # reached line items / totals, which come after the header
         vendor_lines.append(line)
     vendor = ", ".join(vendor_lines[:3]) if vendor_lines else lines[0]
 
@@ -310,11 +324,11 @@ def add_expense_interactive(store):
 
 
 def paste_receipt_interactive(store):
-    print("Paste the receipt text below. Enter a blank line when done.")
+    print("Paste the receipt text below. Type '.' on its own line when done.")
     lines = []
     while True:
         line = input()
-        if line == "":
+        if line.strip() == ".":
             break
         lines.append(line)
     text = "\n".join(lines)

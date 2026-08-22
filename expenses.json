@@ -8,5 +8,15 @@
     "amount": 35.0,
     "description": "7.849 gal, $4.459/gal, Pump #7",
     "raw_text": "13939 SE McLoughlin\nH&S 3096 Oakgrove Ch\n3096\nMilwaukie, OR\n97267\n08/21/2026\n11:26:56 AM\nPREPAID RECEIPT\nPUMP# 7\nUNLEAD REG    7.849G\nPRICE/GAL     $4.459\nFUEL TOTAL  $ 35.00"
+  },
+  {
+    "id": 2,
+    "date": "2026-08-22",
+    "time": "10:48AM",
+    "vendor": "ACE HARDWARE #11075 (m), (503) 653-2223",
+    "category": "Home & Garden",
+    "amount": 31.98,
+    "description": "",
+    "raw_text": "THANK YOU FOR SHOPPING AT\nACE HARDWARE #11075 (m)\n(503) 653-2223\n\n7166127\nMOSS-B-WARE 3 LB     2 EA  $15.99 EA  $31.98         SALE\n\n08/22/26  10:48AM  PAULDOD\n\nSUB-TOTAL:$          31.98\nTAX:      $             .00\nTOTAL:    $          31.98"
   }
 ]
