@@ -1,110 +1,149 @@
-# Legends of the Forgotten Realm
+# FlipScan
 
-A classic text-based RPG adventure game written in Python.
+A resale deal scanner for Facebook Marketplace, built for one reseller working
+the Portland metro.
 
-## Features
+Every hour it looks at what's newly listed, works out what each item actually
+resells for, grades its condition from the photos, subtracts every real cost —
+platform fees, gas, an hour of your life — and pushes the handful worth getting
+in the car for.
 
-- **3 Character Classes**: Choose between Warrior, Mage, or Rogue, each with unique stats
-- **Turn-based Combat**: Strategic battle system with attack, defense, and healing
-- **Leveling System**: Gain experience and level up to become stronger
-- **Inventory Management**: Collect weapons, potions, and equipment
-- **Multiple Locations**: Explore 5 different areas with varying difficulty
-- **Enemies**: Fight goblins, trolls, skeletons, and even a dragon!
-- **Items & Equipment**: Find and equip weapons to increase your power
+> **Also in this repo:** `rpg_game.py`, an unrelated text adventure from an
+> earlier session. Its docs are at [docs/rpg-game.md](docs/rpg-game.md).
 
-## Character Classes
+---
 
-### Warrior
-- HP: 120
-- Attack: 15
-- Defense: 8
-- Best for: Beginners, survivability
-
-### Mage
-- HP: 80
-- Attack: 20
-- Defense: 3
-- Best for: High damage output, risky gameplay
-
-### Rogue
-- HP: 100
-- Attack: 18
-- Defense: 5
-- Best for: Balanced playstyle
-
-## Locations
-
-1. **Village of Eldoria** - Safe haven for resting and preparing
-2. **Dark Forest** - Easy difficulty, goblins and wolves
-3. **Ancient Cave** - Medium difficulty, trolls and spiders
-4. **Cursed Ruins** - Hard difficulty, skeleton warriors and dark mages
-5. **Dragon's Lair** - Boss battle against the Ancient Dragon
-
-## How to Play
-
-### Installation
-
-Requires Python 3.6 or higher.
+## Start here
 
 ```bash
-python3 rpg_game.py
+pip install -e .
+flipscan init            # writes .env with generated secrets, sets up the DB
+flipscan scan --demo     # runs the whole pipeline on fixture listings
+flipscan serve           # API + phone app + hourly scanner
 ```
 
-### Gameplay
+Open `http://localhost:8000/app/` on your phone, paste the token from `.env`,
+and in Safari tap **Share → Add to Home Screen**. It gets its own icon and
+opens full screen like a normal app.
 
-1. **Character Creation**: Choose your name and class
-2. **Exploration**: Navigate through different locations
-3. **Combat**: Encounter enemies and fight them in turn-based battles
-4. **Inventory**: Collect and use items to aid your journey
-5. **Leveling**: Defeat enemies to gain experience and level up
-6. **Goal**: Defeat the Ancient Dragon to win the game!
+Full walkthrough: **[docs/SETUP.md](docs/SETUP.md)**.
 
-### Combat Controls
+---
 
-- **Attack**: Deal damage to the enemy
-- **Use Potion**: Heal yourself during battle
-- **Run Away**: 50% chance to escape from combat
+## What it actually does
 
-### Main Menu Options
+**Finds listings.** Hourly, across the searches you care about, at a human pace
+with hard per-scan ceilings.
 
-1. **Look for enemies**: Search for battles in your current location
-2. **Check inventory**: View your items and equipment
-3. **Travel**: Move to different locations
-4. **Rest**: Pay gold to restore HP at an inn (20 gold)
-5. **View stats**: Check your character's detailed statistics
-6. **Quit game**: Exit the game
+**Works out what it's worth.** Blends eBay sold comps, your own past outcomes,
+and — for odd items the APIs can't price — a web-research pass. Sources that
+disagree widen the range and lower the confidence rather than averaging into a
+confident wrong answer.
 
-## Tips
+**Looks at the photos.** Claude grades condition A–F, identifies the specific
+model, spots damage the seller didn't mention, flags stock photos and likely
+counterfeits, and writes a per-item checklist of things to verify in person.
 
-- Start in the Dark Forest to gain experience before tackling harder areas
-- Keep healing potions in your inventory for tough battles
-- Rest at the village when your HP is low
-- Equip better weapons as you find them
-- The Dragon's Lair is the final challenge - prepare well!
+**Does the real arithmetic.** Fees, shipping, cleanup, and the cost of the
+drive all come off before anything is called a profit.
 
-## Game Mechanics
+**Decides whether it's worth the trip.** The radius scales with the money: a
+$2,000 spread earns the full 60 miles, a $40 flip stays inside 11, and a
+low-margin couch that needs a truck correctly comes back as *not worth it at
+any distance*.
 
-### Combat System
-- Damage dealt = (Your Attack ± random variance) - Enemy Defense
-- Minimum damage is always 1
-- Turn-based: You attack, then the enemy attacks
+**Groups pickups into runs.** Several deals clustered together become one
+drive, with the trip cost charged once instead of per item — which is where the
+margin on small items actually comes from.
 
-### Leveling
-- Gain experience by defeating enemies
-- Each level increases your max HP, attack, and defense
-- Experience required increases by 50% each level
+**Tells you how to stay safe.** Every deal carries a meetup brief sized to the
+situation, because the app's whole job is sending someone to meet a stranger
+with cash.
 
-### Gold
-- Earned by defeating enemies
-- Used to rest at inns (20 gold per rest)
-- Different enemies drop different amounts
+**Learns.** Record what you paid and what it sold for, and the estimates
+recalibrate per category.
 
-## License
+---
 
-This is a free, open-source game. Feel free to modify and share!
+## What it looks like
 
-## Credits
+The feed leads with profit, because that's the only number that decides whether
+you open it:
 
-Created as a classic text-based RPG adventure.
+```
+  $511   74% ROI     Trek Domane SL5 56cm carbon road bike
+  buy $650 → sells $1,203      [74] [B] [8.4 mi] [~18d to sell]
+```
 
-Enjoy your adventure in the Forgotten Realm!
+Tap through and every number is itemised and traceable — the comps it used, the
+photos it graded, and why it scored what it did.
+
+---
+
+## Cost
+
+Running Claude over every listing an hourly scan turns up would cost about
+**$70/day**, which is absurd for a business built on margin. So the pipeline is
+staged, and each stage is more expensive and sees far fewer listings:
+
+| Stage | Cost | Listings |
+|---|---|---|
+| Collect | free | ~400 |
+| Dedupe + text screen | free | ~400 → ~60 |
+| Comps lookup | free | ~60 → ~15 |
+| Photo analysis (Claude) | paid | ~15 |
+| Score + notify | free | the ones worth alerting |
+
+A listing that can't clear the profit bar even under generous assumptions is
+dropped for nothing and never costs a model call. Real-world spend lands around
+**$0.30–0.80/day**, with a hard daily cap you set.
+
+---
+
+## Layout
+
+```
+server/flipscan/
+  collectors/   listing sources (Facebook, manual paste, demo fixtures)
+  comps/        valuation: eBay, own history, web research, category priors
+  enrich/       photo grading + description mining
+  scoring/      fees, trip economics, the deal score, pickup runs
+  notify/       ntfy, web push, APNs, SMS
+  api/          REST API for the phone
+  pipeline.py   the staged hourly scan
+web/            installable PWA — no build step
+ios/            SwiftUI app (written, never compiled — see ios/README.md)
+docs/           setup, deployment, scoring maths, legal reality, playbook
+```
+
+---
+
+## Documentation
+
+| | |
+|---|---|
+| [SETUP.md](docs/SETUP.md) | Get it running, phone included |
+| [HOW-IT-SCORES.md](docs/HOW-IT-SCORES.md) | The maths, in full |
+| [LEGAL.md](docs/LEGAL.md) | **Read before scanning Facebook.** Honest risks |
+| [DEPLOY.md](docs/DEPLOY.md) | Running it somewhere permanent |
+| [RESELLER-GUIDE.md](docs/RESELLER-GUIDE.md) | Using it to actually make money |
+
+---
+
+## Honest status
+
+**Working and tested:** the whole server pipeline, valuation, scoring, trip
+economics, notifications, REST API, and the PWA. 159 tests pass.
+
+**Written but never compiled:** the SwiftUI app. There's no Swift toolchain on
+Linux, where this was built. Use the PWA today; the native app is ready for the
+day there's a Mac.
+
+**Needs your attention:** the Facebook collector depends on scraping a site
+with no public API, which is against Meta's Terms of Service and carries real
+account risk. [docs/LEGAL.md](docs/LEGAL.md) covers what that means and how to
+limit the damage. The demo and manual collectors need none of it.
+
+**Only as good as its comps:** without eBay keys, resale values are category
+averages, and the app says so on every affected deal. The keys are free and
+take about ten minutes.

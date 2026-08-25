@@ -1,37 +1,27 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environments
+.venv/
 venv/
-ENV/
-env/
+.pytest_cache/
+.ruff_cache/
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Secrets & local state — NEVER commit these
+.env
+.env.local
+data/
+*.db
+*.sqlite3
+browser-profile/
+fb-session/
 
-# OS
+# Cached listing images
+media/
+
+# macOS / iOS
 .DS_Store
-Thumbs.db
+ios/*.xcodeproj/
+ios/*.xcworkspace/
+ios/build/
+DerivedData/

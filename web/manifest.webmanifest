@@ -1,0 +1,26 @@
+{
+  "name": "FlipScan — Marketplace Deals",
+  "short_name": "FlipScan",
+  "description": "Finds underpriced resale listings near Portland, grades them, and tells you what they're actually worth.",
+  "start_url": "/app/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "categories": ["shopping", "business", "productivity"],
+  "icons": [
+    { "src": "/app/icons/icon-96.png",  "sizes": "96x96",   "type": "image/png" },
+    { "src": "/app/icons/icon-152.png", "sizes": "152x152", "type": "image/png" },
+    { "src": "/app/icons/icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/app/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/app/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/app/icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/app/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Today's deals", "url": "/app/#/deals" },
+    { "name": "Pickup runs",   "url": "/app/#/runs" },
+    { "name": "Check an item", "url": "/app/#/add" }
+  ]
+}

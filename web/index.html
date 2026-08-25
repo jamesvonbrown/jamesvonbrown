@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- viewport-fit=cover is what lets the app paint under the notch and home
+     indicator; without it an installed PWA gets white bars on an iPhone. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<title>FlipScan</title>
+<meta name="description" content="Marketplace deal scanner for resellers.">
+
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0b0f14" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+
+<!-- iOS still needs the legacy meta tags to run without Safari chrome. -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FlipScan">
+<link rel="apple-touch-icon" href="/app/icons/icon-180.png">
+<link rel="icon" href="/app/icons/favicon.ico" sizes="any">
+<link rel="stylesheet" href="/app/styles.css">
+</head>
+<body>
+
+<!-- Token onboarding, shown until the app has credentials --------------- -->
+<div id="setup" class="setup hidden">
+  <div class="setup-card">
+    <img src="/app/icons/icon-192.png" alt="" class="setup-logo" width="72" height="72">
+    <h1>FlipScan</h1>
+    <p>Paste the access token from your server's <code>.env</code> file
+       (<code>FLIPSCAN_API_TOKEN</code>).</p>
+    <input id="setup-token" type="password" placeholder="Access token"
+           autocomplete="off" autocapitalize="off" spellcheck="false">
+    <input id="setup-url" type="url" placeholder="Server URL (optional)"
+           autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button id="setup-go" class="btn btn-primary">Connect</button>
+    <p id="setup-error" class="setup-error"></p>
+    <details class="setup-help">
+      <summary>Add to Home Screen</summary>
+      <p>In Safari: tap the Share button, then <b>Add to Home Screen</b>.
+         It gets its own icon and opens full screen like a normal app.</p>
+    </details>
+  </div>
+</div>
+
+<!-- App shell ---------------------------------------------------------- -->
+<div id="app" class="app hidden">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1 id="view-title">Deals</h1>
+      <div class="topbar-actions">
+        <button id="btn-scan" class="icon-btn" title="Scan now" aria-label="Scan now">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6"
+                  fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="filter-bar" class="filters"></div>
+  </header>
+
+  <main id="view" class="view"></main>
+
+  <nav class="tabbar">
+    <a href="#/deals" class="tab" data-tab="deals">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M20.6 13.4 11 3.8V3H4v7.8l9.6 9.6a2 2 0 0 0 2.8 0l4.2-4.2a2 2 0 0 0 0-2.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor"/></svg>
+      <span>Deals</span>
+    </a>
+    <a href="#/runs" class="tab" data-tab="runs">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M3 18h4l3-12h4l3 6h4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="6" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="18" cy="18" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <span>Runs</span>
+    </a>
+    <a href="#/add" class="tab" data-tab="add">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Check</span>
+    </a>
+    <a href="#/settings" class="tab" data-tab="settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 9 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.6 9a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+      <span>Settings</span>
+    </a>
+  </nav>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="/app/app.js"></script>
+</body>
+</html>

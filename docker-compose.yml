@@ -1,0 +1,43 @@
+services:
+  flipscan:
+    build:
+      context: .
+      args:
+        # false gives a much smaller image if you aren't scraping Facebook.
+        WITH_BROWSER: "true"
+    image: flipscan:latest
+    container_name: flipscan
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # Everything that must survive a rebuild: the database, cached photos,
+      # listing screenshots, and the logged-in browser profile.
+      - ./data:/app/data
+    # Chromium needs more than Docker's 64MB default or tabs crash silently.
+    shm_size: "1gb"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
+
+  # Optional: put HTTPS in front so the PWA can be installed from anywhere.
+  # Web Push and Add-to-Home-Screen both require a secure origin.
+  #
+  # caddy:
+  #   image: caddy:2-alpine
+  #   restart: unless-stopped
+  #   ports: ["80:80", "443:443"]
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile
+  #     - caddy_data:/data
+  #   depends_on: [flipscan]
+  #
+  # Caddyfile contents (one line):
+  #   flip.yourdomain.com { reverse_proxy flipscan:8000 }
+
+# volumes:
+#   caddy_data:
